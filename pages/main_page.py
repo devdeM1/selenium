@@ -1,8 +1,7 @@
-from locators.main_page_locators import MainPageLocators
-
+from locators.main_page_locators import LOGIN_BUTTON
 
 class MainPage:
-    locators = MainPageLocators()
 
-    def click_on_login_button(self, web_driver):
-        web_driver.get_visible_element(self.locators.LOGIN_BUTTON).click()
+    @staticmethod
+    def click_on_login_button(web_driver):
+        web_driver.get_visible_element(LOGIN_BUTTON).click()
