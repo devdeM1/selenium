@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.options import Options
 
 
 @pytest.fixture(scope="function")
-def driver():
+def browser():
     chrome_options = Options()
     chrome_options.add_argument("--lang=en")
     chrome_options.add_argument("--start-maximized")

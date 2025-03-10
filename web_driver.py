@@ -3,7 +3,16 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 class WebDriver:
+    _instance = None
     DEFAULT_TIMEOUT = 5
+
+    def __new__(cls, driver=None, url=None):
+        if cls._instance is None:
+            cls._instance = super(WebDriver, cls).__new__(cls)
+            if driver is not None and url is not None:
+                cls._instance.driver = driver
+                cls._instance.url = url
+        return cls._instance
 
     def __init__(self,driver, url):
         self.driver = driver
