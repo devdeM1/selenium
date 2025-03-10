@@ -9,10 +9,3 @@ class LoginPage(WebDriver):
         self.get_visible_element(self.locators.LOGIN).send_keys(login)
         self.get_visible_element(self.locators.PASSWORD).send_keys(password)
         self.get_visible_element(self.locators.SUBMIT).click()
-
-    def page_is_successfully_open(self):
-        try:
-            self.get_present_element(self.locators.PASSWORD)
-            return True
-        except Exception:
-            return False

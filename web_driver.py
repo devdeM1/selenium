@@ -21,3 +21,10 @@ class WebDriver:
 
     def get_present_element(self, locator, timeout=DEFAULT_TIMEOUT):
         return wait(self.driver, timeout).until(EC.presence_of_element_located(locator))
+
+    def page_is_successfully_open(self, locator):
+        try:
+            self.get_present_element(locator)
+            return True
+        except Exception:
+            return False
