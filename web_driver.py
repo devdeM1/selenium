@@ -14,7 +14,7 @@ class WebDriver:
                 cls._instance.url = url
         return cls._instance
 
-    def __init__(self,driver, url):
+    def __init__(self, driver, url):
         self.driver = driver
         self.url = url
 

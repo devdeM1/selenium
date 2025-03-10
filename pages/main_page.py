@@ -1,5 +1,4 @@
 from locators.main_page_locators import MainPageLocators
-from web_driver import WebDriver
 
 
 class MainPage:
