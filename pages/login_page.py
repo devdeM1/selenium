@@ -1,5 +1,4 @@
 from locators.login_page_locators import LoginPageLocators
-from web_driver import WebDriver
 
 
 class LoginPage:
