@@ -1,8 +1,11 @@
+from selenium.common import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-class BasePage:
+class WebDriver:
+    DEFAULT_TIMEOUT = 5
+
     def __init__(self,driver, url):
         self.driver = driver
         self.url = url
@@ -10,13 +13,12 @@ class BasePage:
     def open(self):
         self.driver.get(self.url)
 
-    def element_is_visible(self, locator, timeout=5):
-        self.go_to_element(self.element_is_present(locator))
+    def get_visible_element(self, locator, timeout=DEFAULT_TIMEOUT):
+        self.scroll_to_element(self.get_present_element(locator))
         return wait(self.driver, timeout).until(EC.visibility_of_element_located(locator))
 
-    def go_to_element(self, element):
+    def scroll_to_element(self, element):
         self.driver.execute_script("arguments[0].scrollIntoView();", element)
 
-    def element_is_present(self, locator, timeout=5):
-        print('locator')
+    def get_present_element(self, locator, timeout=DEFAULT_TIMEOUT):
         return wait(self.driver, timeout).until(EC.presence_of_element_located(locator))
