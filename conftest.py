@@ -1,13 +1,11 @@
 import pytest
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+
+from web_driver import WebDriver
 
 
 @pytest.fixture(scope="function")
-def browser():
-    chrome_options = Options()
-    chrome_options.add_argument("--lang=en")
-    chrome_options.add_argument("--start-maximized")
-    driver = webdriver.Chrome(options=chrome_options)
-    yield driver
-    driver.quit()
+def driver():
+    web_driver = WebDriver()
+    web_driver.open('https://store.steampowered.com')
+    yield
+    web_driver.quit()
