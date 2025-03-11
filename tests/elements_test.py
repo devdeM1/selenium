@@ -16,10 +16,10 @@ class TestLogin:
         web_driver = WebDriver(browser, self.MAIN_URL)
         main_page = MainPage()
         web_driver.open()
-        assert web_driver.page_is_successfully_open(main_page.locators.TITLE), 'The page is not opened correctly'
+        assert web_driver.page_is_successfully_open(main_page.TITLE), 'The page is not opened correctly'
         main_page.click_on_login_button(web_driver)
         login_page = LoginPage()
-        assert web_driver.page_is_successfully_open(login_page.locators.PASSWORD), 'The page is not opened correctly'
+        assert web_driver.page_is_successfully_open(login_page.PASSWORD), 'The page is not opened correctly'
         user_name = self.fake.user_name()
         password = self.fake.password()
         login_page.fill_all_fields_and_click_submit(web_driver, user_name, password)
