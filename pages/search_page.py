@@ -1,7 +1,6 @@
 from selenium.webdriver.common.by import By
 
 from pages.base_page import BasePage
-from utils import Utils
 
 
 class SearchPage(BasePage):
@@ -9,17 +8,16 @@ class SearchPage(BasePage):
     DROPDOWN_SORT_DESCENDING_PRICE = (By.XPATH, "//div[contains(@class, 'dropcontainer')]//a[@id='Price_DESC']")
     PRICES_OF_GAMES = (By.XPATH, "//div[contains(@class, 'search_price') or contains(@class, 'discount_final_price')]")
 
-    def click_on_drop_box_sort_by(self, driver):
-        self.web_driver.get_present_element(driver, SearchPage.DROPDOWN_BOX_SORT_BY).click()
+    def click_on_drop_box_sort_by(self):
+        self.web_driver.get_present_element(self.driver, SearchPage.DROPDOWN_BOX_SORT_BY).click()
 
-    def sort_by_price_desc(self, driver):
-        self.web_driver.get_present_element(driver, SearchPage.DROPDOWN_SORT_DESCENDING_PRICE).click()
+    def sort_by_price_desc(self):
+        self.web_driver.get_present_element(self.driver, SearchPage.DROPDOWN_SORT_DESCENDING_PRICE).click()
 
-    def take_prices_of_games(self, driver, count_games):
-        prices_of_games = self.web_driver.get_present_elements(driver, SearchPage.PRICES_OF_GAMES)
+    def take_prices_of_games(self, count_games):
+        prices_of_games = self.web_driver.get_present_elements(self.driver, SearchPage.PRICES_OF_GAMES)
         prices = [price.text for price in prices_of_games[:count_games]]
-        prices = Utils.extract_prices(Utils(), prices)
         return prices
 
-    def wait_update_data(self, driver, initial_prices, search_page, count):
-        self.web_driver.wait_update_data(driver, initial_prices, search_page, count)
+    def wait_update_data(self, initial_prices, search_page, count):
+        self.web_driver.wait_update_data(self.driver, initial_prices, search_page, count)

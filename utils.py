@@ -1,5 +1,6 @@
 class Utils:
-    def extract_prices(self, list_prices):
+    @staticmethod
+    def extract_prices(list_prices):
         results = []
 
         for data in list_prices:
