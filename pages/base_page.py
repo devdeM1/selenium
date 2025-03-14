@@ -1,15 +1,17 @@
 from abc import ABC
 
-from web_driver import WebDriver
+from web_driver_utils import WebDriverUtils
 
 
 class BasePage(ABC):
-    def __init__(self):
-        self.web_driver = WebDriver()
+    web_driver = WebDriverUtils()
+
+    def __init__(self, driver):
+        self.driver = driver
 
     def page_is_successfully_open(self, locator):
         try:
-            self.web_driver.get_present_element(locator)
+            self.web_driver.get_present_element(self.driver, locator)
             return True
         except Exception:
             return False
