@@ -42,7 +42,7 @@ class TestLogin:
         initial_prices = search_page.take_prices_of_games(count)
         search_page.click_on_drop_box_sort_by()
         search_page.sort_by_price_desc()
-        search_page.wait_update_data(initial_prices, search_page, count)
+        search_page.wait_update_data(initial_prices, count)
         prices = search_page.take_prices_of_games(count)
         prices = Utils.extract_prices(prices)
         assert prices == sorted(prices, reverse=True), \

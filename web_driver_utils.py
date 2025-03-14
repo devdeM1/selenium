@@ -17,4 +17,4 @@ class WebDriverUtils:
 
     @staticmethod
     def wait_update_data(driver, initial_prices, search_page, count):
-        wait(driver, 10).until(lambda d: initial_prices != search_page.take_prices_of_games(driver, count))
+        wait(driver, 10).until(lambda d: initial_prices != search_page.take_prices_of_games(count))

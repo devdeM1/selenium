@@ -19,5 +19,5 @@ class SearchPage(BasePage):
         prices = [price.text for price in prices_of_games[:count_games]]
         return prices
 
-    def wait_update_data(self, initial_prices, search_page, count):
-        self.web_driver.wait_update_data(self.driver, initial_prices, search_page, count)
+    def wait_update_data(self, initial_prices, count):
+        self.web_driver.wait_update_data(self.driver, initial_prices, self, count)
