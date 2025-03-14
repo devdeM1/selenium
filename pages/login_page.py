@@ -8,7 +8,7 @@ class LoginPage(BasePage):
     PASSWORD = (By.XPATH, "//input[@type='password']")
     SUBMIT = (By.XPATH, "//button[@type='submit']")
 
-    def fill_all_fields_and_click_submit(self, login, password):
-        self.web_driver.get_visible_element(LoginPage.LOGIN).send_keys(login)
-        self.web_driver.get_visible_element(LoginPage.PASSWORD).send_keys(password)
-        self.web_driver.get_visible_element(LoginPage.SUBMIT).click()
+    def fill_all_fields_and_click_submit(self, driver, login, password):
+        self.web_driver.get_present_element(driver, LoginPage.LOGIN).send_keys(login)
+        self.web_driver.get_present_element(driver, LoginPage.PASSWORD).send_keys(password)
+        self.web_driver.get_present_element(driver, LoginPage.SUBMIT).click()
