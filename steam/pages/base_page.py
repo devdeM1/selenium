@@ -1,6 +1,6 @@
 from abc import ABC
 
-from web_driver_utils import WebDriverUtils
+from steam.web_driver_utils import WebDriverUtils
 
 
 class BasePage(ABC):

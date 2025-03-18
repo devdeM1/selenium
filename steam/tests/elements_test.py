@@ -1,11 +1,11 @@
 import pytest
 from faker import Faker
 
-from pages.login_page import LoginPage
-from pages.main_page import MainPage
-from pages.search_page import SearchPage
-from conftest import driver
-from utils import Utils
+from steam.pages.login_page import LoginPage
+from steam.pages.main_page import MainPage
+from steam.pages.search_page import SearchPage
+from steam.conftest import driver
+from steam.utils import Utils
 
 
 class TestLogin:
