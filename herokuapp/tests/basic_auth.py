@@ -17,25 +17,17 @@ def test_javascript_alert(driver):
     js_alerts_page.open()
     assert js_alerts_page.page_is_successfully_open(js_alerts_page.BUTTON_JS_ALERT), "The page is not opened correctly"
     js_alerts_page.click_button_js_alert()
-    alert = driver.switch_to.alert
-    alert_text = alert.text
+    alert_text = js_alerts_page.handle_simple_alert()
     assert alert_text == "I am a JS Alert", "Unexpected alert text!"
-    alert.accept()
     assert js_alerts_page.get_result_output() == "You successfully clicked an alert", \
         "Something is wrong with the alert"
     js_alerts_page.click_button_js_confirm()
-    alert = driver.switch_to.alert
-    alert_text = alert.text
+    alert_text = js_alerts_page.handle_confirmation_alert()
     assert alert_text == "I am a JS Confirm", "Unexpected alert text!"
-    alert.accept()
     assert js_alerts_page.get_result_output() == "You clicked: Ok", "Something is wrong with the alert"
     js_alerts_page.click_button_js_prompt()
-    alert = driver.switch_to.alert
-    alert_text = alert.text
+    random_text = Faker().sentence()
+    alert_text = js_alerts_page.handle_prompt_alert(random_text)
     assert alert_text == "I am a JS prompt", "Unexpected alert text!"
-    fake = Faker()
-    random_text = fake.sentence()
-    alert.send_keys(random_text)
-    alert.accept()
     assert js_alerts_page.get_result_output() == f"You entered: {random_text}", \
         "Prompt input was not processed correctly"
