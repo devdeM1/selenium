@@ -1,13 +1,11 @@
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support.ui import WebDriverWait as wait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
+from herokuapp.pages.base_page import BasePage
 
-class BasicAuthPage:
-    def __init__(self, driver):
-        self.driver = driver
-        self.url = "http://the-internet.herokuapp.com/basic_auth"
+
+class BasicAuthPage(BasePage):
+    TITLE = (By.XPATH, "//p[contains(text(), 'Congratulations! You must have the proper credentials')]")
+    url = "http://the-internet.herokuapp.com/basic_auth"
 
     def open(self):
         self.driver.get(self.url)
@@ -18,10 +16,7 @@ class BasicAuthPage:
 
     def is_auth_successful(self):
         try:
-            wait(self.driver, 10).until(
-                EC.visibility_of_element_located(
-                    (By.XPATH, "//p[contains(text(), 'Congratulations! You must have the proper credentials')]"))
-            )
+            self.web_driver.get_present_element(self.driver, BasicAuthPage.TITLE)
             return True
-        except TimeoutException:
+        except Exception:
             return False

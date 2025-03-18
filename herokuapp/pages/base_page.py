@@ -15,3 +15,6 @@ class BasePage(ABC):
             return True
         except Exception:
             return False
+
+    def open(self):
+        raise NotImplementedError("Subclasses must implement open method.")
