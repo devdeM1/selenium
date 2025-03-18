@@ -15,16 +15,16 @@ class TestLogin:
 
     def test_login_on_main_page(self, driver):
         main_page = MainPage(driver)
-        assert main_page.page_is_successfully_open(driver, main_page.LOGIN_BUTTON), 'The page is not opened correctly'
+        assert main_page.page_is_successfully_open(main_page.LOGIN_BUTTON), 'The page is not opened correctly'
         main_page.click_on_login_button()
         login_page = LoginPage(driver)
-        assert login_page.page_is_successfully_open(driver, login_page.PASSWORD), 'The page is not opened correctly'
+        assert login_page.page_is_successfully_open(login_page.PASSWORD), 'The page is not opened correctly'
         user_name = self.fake.user_name()
         password = self.fake.password()
         login_page.fill_all_fields_and_click_submit(user_name, password)
-        assert login_page.page_is_successfully_open(driver,login_page.DISABLED_SUBMIT),\
+        assert login_page.page_is_successfully_open(login_page.DISABLED_SUBMIT),\
             'Input verification has not started'
-        assert login_page.page_is_successfully_open(driver,login_page.LABEL_UNDER_SUBMIT),\
+        assert login_page.page_is_successfully_open(login_page.LABEL_UNDER_SUBMIT),\
             'Input verification has not started'
 
     @pytest.mark.parametrize('game_name, count', [
@@ -33,11 +33,10 @@ class TestLogin:
     ])
     def test_take_games_list(self, driver, game_name, count):
         main_page = MainPage(driver)
-        assert main_page.page_is_successfully_open(driver,
-                                                   main_page.SEARCH_INPUT_BOX), 'The page is not opened correctly'
+        assert main_page.page_is_successfully_open(main_page.SEARCH_INPUT_BOX), 'The page is not opened correctly'
         main_page.find_a_game_by_name(game_name)
         search_page = SearchPage(driver)
-        assert search_page.page_is_successfully_open(driver, search_page.DROPDOWN_BOX_SORT_BY), \
+        assert search_page.page_is_successfully_open(search_page.DROPDOWN_BOX_SORT_BY), \
             'The page is not opened correctly'
         initial_prices = search_page.take_prices_of_games(count)
         search_page.click_on_drop_box_sort_by()
