@@ -19,21 +19,21 @@ class BasePage(ABC):
     def open(self):
         raise NotImplementedError("Subclasses must implement open method.")
 
-    def handle_simple_alert(self):
+    def get_and_accept_simple_alert(self):
         self.web_driver.wait_for_alert(self.driver)
         alert = self.driver.switch_to.alert
         alert_text = alert.text
         alert.accept()
         return alert_text
 
-    def handle_confirmation_alert(self):
+    def get_and_accept_confirmation_alert(self):
         self.web_driver.wait_for_alert(self.driver)
         alert = self.driver.switch_to.alert
         alert_text = alert.text
         alert.accept()
         return alert_text
 
-    def handle_prompt_alert(self, input_text):
+    def get_and_accept_prompt_alert(self, input_text):
         self.web_driver.wait_for_alert(self.driver)
         alert = self.driver.switch_to.alert
         alert_text = alert.text
