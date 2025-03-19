@@ -1,6 +1,6 @@
 from abc import ABC
-
 from web_driver_utils import WebDriverUtils
+from selenium.common.exceptions import TimeoutException
 
 
 class BasePage(ABC):
@@ -19,24 +19,23 @@ class BasePage(ABC):
     def open(self):
         raise NotImplementedError("Subclasses must implement open method.")
 
-    def get_and_accept_simple_alert(self):
+    def get_alert_text(self):
         self.web_driver.wait_for_alert(self.driver)
         alert = self.driver.switch_to.alert
-        alert_text = alert.text
-        alert.accept()
-        return alert_text
+        return alert.text
 
-    def get_and_accept_confirmation_alert(self):
-        self.web_driver.wait_for_alert(self.driver)
+    def accept_alert(self):
         alert = self.driver.switch_to.alert
-        alert_text = alert.text
         alert.accept()
-        return alert_text
 
-    def get_and_accept_prompt_alert(self, input_text):
+    def input_text_to_prompt(self, input_text):
         self.web_driver.wait_for_alert(self.driver)
         alert = self.driver.switch_to.alert
-        alert_text = alert.text
         alert.send_keys(input_text)
-        alert.accept()
-        return alert_text
+
+    def verify_alert_closed(self, timeout=5):
+        try:
+            self.web_driver.wait_for_alert(self.driver, timeout)
+            return False
+        except TimeoutException:
+            return True
