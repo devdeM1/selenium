@@ -5,7 +5,7 @@ from steam.pages.login_page import LoginPage
 from steam.pages.main_page import MainPage
 from steam.pages.search_page import SearchPage
 from steam.conftest import driver
-from steam.utils import Utils
+from utils import extract_prices
 
 
 class TestLogin:
@@ -43,6 +43,6 @@ class TestLogin:
         search_page.sort_by_price_desc()
         search_page.wait_update_data(initial_prices, count)
         prices = search_page.take_prices_of_games(count)
-        prices = Utils.extract_prices(prices)
+        prices = extract_prices(prices)
         assert prices == sorted(prices, reverse=True), \
             'Sorting prices in descending order does not work correctly'

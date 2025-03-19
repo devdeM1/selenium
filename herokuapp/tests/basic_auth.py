@@ -1,9 +1,13 @@
+import random
+
 from faker import Faker
 
 from herokuapp.pages.basic_auth_page import BasicAuthPage
 from herokuapp.conftest import driver
 from herokuapp.pages.contex_menu_page import ContexMenuPage
+from herokuapp.pages.horizontal_slider_page import HorizontalSliderPage
 from herokuapp.pages.js_alerst_page import JavaScriptAlertsPage
+from utils import get_random_slider_value
 
 
 def test_basic_auth(driver):
@@ -22,7 +26,8 @@ def test_javascript_alert(driver):
     assert js_alerts_page.get_alert_text() == "I am a JS Alert", "Unexpected alert text!"
     js_alerts_page.accept_alert()
     assert js_alerts_page.verify_alert_closed()
-    assert js_alerts_page.get_result_output() == "You successfully clicked an alert", "Something is wrong with the alert"
+    assert js_alerts_page.get_result_output() == "You successfully clicked an alert",\
+        "Something is wrong with the alert"
 
     js_alerts_page.click_button_js_confirm()
     assert js_alerts_page.get_alert_text() == "I am a JS Confirm", "Unexpected alert text!"
@@ -35,7 +40,8 @@ def test_javascript_alert(driver):
     random_text = Faker().sentence()
     js_alerts_page.input_text_to_prompt(random_text)
     js_alerts_page.accept_alert()
-    assert js_alerts_page.get_result_output() == f"You entered: {random_text}", "Prompt input was not processed correctly"
+    assert js_alerts_page.get_result_output() == f"You entered: {random_text}", \
+        "Prompt input was not processed correctly"
 
 
 def test_contex_menu_page(driver):
@@ -49,3 +55,15 @@ def test_contex_menu_page(driver):
     assert alert_text == "You selected a context menu", "Unexpected alert text!"
     context_menu_page.accept_alert()
     assert context_menu_page.verify_alert_closed()
+
+
+def test_horizontal_slider_page(driver):
+    horizontal_slider_page = HorizontalSliderPage(driver)
+    horizontal_slider_page.open()
+    assert horizontal_slider_page.page_is_successfully_open(horizontal_slider_page.HORIZONTAL_SLIDER), \
+        "The page is not opened correctly"
+    min_value, max_value, step = horizontal_slider_page.get_slider_properties()
+    random_value = get_random_slider_value(min_value, max_value, step)
+    horizontal_slider_page.set_slider_value(random_value)
+    displayed_value = horizontal_slider_page.get_slider_value()
+    assert displayed_value == random_value, "The slider value does not match the set value"
