@@ -6,6 +6,7 @@ from herokuapp.pages.basic_auth_page import BasicAuthPage
 from herokuapp.conftest import driver
 from herokuapp.pages.contex_menu_page import ContexMenuPage
 from herokuapp.pages.horizontal_slider_page import HorizontalSliderPage
+from herokuapp.pages.hovers_page import HoversPage
 from herokuapp.pages.js_alerst_page import JavaScriptAlertsPage
 from utils import get_random_slider_value
 
@@ -67,3 +68,18 @@ def test_horizontal_slider_page(driver):
     horizontal_slider_page.set_slider_value(random_value)
     displayed_value = horizontal_slider_page.get_slider_value()
     assert displayed_value == random_value, "The slider value does not match the set value"
+
+
+def test_hovers_page(driver):
+    hovers_page = HoversPage(driver)
+    hovers_page.open()
+    assert hovers_page.page_is_successfully_open(hovers_page.USER_IMAGES), "The page is not opened correctly"
+    user_count = 3
+    for i in range(user_count):
+        hovers_page.hover_on_user(i)
+        user_name = hovers_page.get_user_name(i)
+        assert user_name == f"name: user{i + 1}", f"Expected 'name: user{i + 1}', but got '{user_name}'"
+        hovers_page.click_user_profile_link(i)
+        assert hovers_page.page_is_successfully_open(hovers_page.TITLE_PROFILE), "The page is not opened correctly"
+        hovers_page.go_to_previous_page()
+        assert hovers_page.page_is_successfully_open(hovers_page.USER_IMAGES), "Returning to the previous page failed"

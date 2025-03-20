@@ -39,3 +39,6 @@ class BasePage(ABC):
             return False
         except TimeoutException:
             return True
+
+    def go_to_previous_page(self):
+        self.driver.back()
