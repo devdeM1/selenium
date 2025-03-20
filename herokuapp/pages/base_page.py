@@ -42,3 +42,18 @@ class BasePage(ABC):
 
     def go_to_previous_page(self):
         self.driver.back()
+
+    def switch_to_new_window(self):
+        self.web_driver.switch_to_new_window(self.driver)
+
+    def switch_to_first_window(self):
+        self.web_driver.switch_to_first_window(self.driver)
+
+    def close_window_by_title(self, title):
+        self.web_driver.close_window_by_title(self.driver, title)
+
+    def get_title(self):
+        return self.driver.title
+
+    def get_window_count(self):
+        return self.web_driver.get_window_count(self.driver)

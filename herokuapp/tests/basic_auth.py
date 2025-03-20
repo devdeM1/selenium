@@ -1,5 +1,3 @@
-import random
-
 from faker import Faker
 
 from herokuapp.pages.basic_auth_page import BasicAuthPage
@@ -8,6 +6,8 @@ from herokuapp.pages.contex_menu_page import ContexMenuPage
 from herokuapp.pages.horizontal_slider_page import HorizontalSliderPage
 from herokuapp.pages.hovers_page import HoversPage
 from herokuapp.pages.js_alerst_page import JavaScriptAlertsPage
+from herokuapp.pages.new_widndow_page import NewWindowPage
+from herokuapp.pages.windows_page import WindowsPage
 from utils import get_random_slider_value
 
 
@@ -83,3 +83,30 @@ def test_hovers_page(driver):
         assert hovers_page.page_is_successfully_open(hovers_page.TITLE_PROFILE), "The page is not opened correctly"
         hovers_page.go_to_previous_page()
         assert hovers_page.page_is_successfully_open(hovers_page.USER_IMAGES), "Returning to the previous page failed"
+
+def test_windows_page(driver):
+    windows_page = WindowsPage(driver)
+    windows_page.open()
+    assert windows_page.page_is_successfully_open(windows_page.HREF_NEW_WINDOW), "The page is not opened correctly"
+
+    windows_page.click_on_href_new_window()
+    windows_page.switch_to_new_window()
+    new_window_page = NewWindowPage(driver)
+    assert new_window_page.get_title() == "New Window", "Not correct TITLE of page"
+    assert new_window_page.get_new_window_text() == "New Window",  "Not correct text on new window page"
+
+    windows_page.switch_to_first_window()
+    assert windows_page.page_is_successfully_open(windows_page.HREF_NEW_WINDOW), "The main page is not opened correctly"
+
+    windows_page.click_on_href_new_window()
+    windows_page.switch_to_new_window()
+    assert new_window_page.get_title() == "New Window", "Not correct TITLE of page"
+    assert new_window_page.get_new_window_text() == "New Window", "Not correct text on new window page"
+
+    windows_page.switch_to_first_window()
+    assert windows_page.page_is_successfully_open(windows_page.HREF_NEW_WINDOW), "The main page is not opened correctly"
+
+    windows_page.close_window_by_title("New Window")
+    assert  windows_page.get_window_count() ==  2, "Expected 2 windows after closing the first new window"
+    windows_page.close_window_by_title("New Window")
+    assert windows_page.get_window_count() == 1, "Expected 1 window after closing the second new window."
