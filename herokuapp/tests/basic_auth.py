@@ -9,6 +9,7 @@ from herokuapp.pages.hovers_page import HoversPage
 from herokuapp.pages.infinite_scroll_page import InfiniteScrollPage
 from herokuapp.pages.js_alerst_page import JavaScriptAlertsPage
 from herokuapp.pages.new_widndow_page import NewWindowPage
+from herokuapp.pages.upload_page import UploadPage
 from herokuapp.pages.windows_page import WindowsPage
 from utils import get_random_slider_value
 
@@ -140,3 +141,17 @@ def test_infinite_scroll_page(driver):
         paragraph_count = infinite_scroll_page.get_paragraph_count()
 
     assert paragraph_count == 23, f"The number of paragraphs should be 23, but found {paragraph_count}."
+
+
+def test_file_upload_page(driver):
+    upload_page = UploadPage(driver)
+    upload_page.open()
+    assert upload_page.page_is_successfully_open(upload_page.UPLOAD_BUTTON), "The page is not opened correctly."
+    file_path = r"D:\Download\bsuir.png"
+    upload_page.upload_file(file_path)
+    upload_page.submit_upload()
+    assert upload_page.page_is_successfully_open(upload_page.SUCCESS_MESSAGE), \
+        "The file was not uploaded successfully."
+    uploaded_file_name = "bsuir.png"
+    assert upload_page.is_file_name_displayed(uploaded_file_name), \
+        f"The file '{uploaded_file_name}' was not displayed on the page."
