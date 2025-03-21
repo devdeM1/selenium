@@ -6,6 +6,7 @@ from herokuapp.pages.contex_menu_page import ContexMenuPage
 from herokuapp.pages.dynamic_content_page import DynamicContentPage
 from herokuapp.pages.horizontal_slider_page import HorizontalSliderPage
 from herokuapp.pages.hovers_page import HoversPage
+from herokuapp.pages.infinite_scroll_page import InfiniteScrollPage
 from herokuapp.pages.js_alerst_page import JavaScriptAlertsPage
 from herokuapp.pages.new_widndow_page import NewWindowPage
 from herokuapp.pages.windows_page import WindowsPage
@@ -98,7 +99,7 @@ def test_windows_page(driver):
     assert new_window_page.get_new_window_text() == "New Window", "Not correct text on new window page"
 
     windows_page.switch_to_first_window()
-    assert windows_page.page_is_successfully_open(windows_page.HREF_NEW_WINDOW), "The main page is not opened correctly"
+    assert windows_page.page_is_successfully_open(windows_page.HREF_NEW_WINDOW), "The page is not opened correctly"
 
     windows_page.click_on_href_new_window()
     windows_page.switch_to_new_window()
@@ -117,7 +118,7 @@ def test_windows_page(driver):
 def test_dynamic_content_page(driver):
     dynamic_content_page = DynamicContentPage(driver)
     dynamic_content_page.open()
-    assert dynamic_content_page.page_is_successfully_open(dynamic_content_page.HREF)
+    assert dynamic_content_page.page_is_successfully_open(dynamic_content_page.HREF), "The page is not opened correctly"
     while True:
         dynamic_content_page.reload()
         images = dynamic_content_page.get_user_images()
@@ -126,3 +127,16 @@ def test_dynamic_content_page(driver):
             break
     # I don't understand how to complete the test
     assert found_matching_images
+
+
+def test_infinite_scroll_page(driver):
+    infinite_scroll_page = InfiniteScrollPage(driver)
+    infinite_scroll_page.open()
+    assert infinite_scroll_page.page_is_successfully_open(infinite_scroll_page.PARAGRAPHS), \
+        "The page is not opened correctly"
+    paragraph_count = 0
+    while paragraph_count < 23:
+        infinite_scroll_page.scroll_down()
+        paragraph_count = infinite_scroll_page.get_paragraph_count()
+
+    assert paragraph_count == 23, f"The number of paragraphs should be 23, but found {paragraph_count}."

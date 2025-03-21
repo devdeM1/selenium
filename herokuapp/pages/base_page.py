@@ -60,3 +60,6 @@ class BasePage(ABC):
 
     def reload(self):
         self.driver.refresh()
+
+    def scroll_down(self):
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
