@@ -3,6 +3,7 @@ from faker import Faker
 from herokuapp.pages.basic_auth_page import BasicAuthPage
 from herokuapp.conftest import driver
 from herokuapp.pages.contex_menu_page import ContexMenuPage
+from herokuapp.pages.dynamic_content_page import DynamicContentPage
 from herokuapp.pages.horizontal_slider_page import HorizontalSliderPage
 from herokuapp.pages.hovers_page import HoversPage
 from herokuapp.pages.js_alerst_page import JavaScriptAlertsPage
@@ -27,7 +28,7 @@ def test_javascript_alert(driver):
     assert js_alerts_page.get_alert_text() == "I am a JS Alert", "Unexpected alert text!"
     js_alerts_page.accept_alert()
     assert js_alerts_page.verify_alert_closed()
-    assert js_alerts_page.get_result_output() == "You successfully clicked an alert",\
+    assert js_alerts_page.get_result_output() == "You successfully clicked an alert", \
         "Something is wrong with the alert"
 
     js_alerts_page.click_button_js_confirm()
@@ -84,6 +85,7 @@ def test_hovers_page(driver):
         hovers_page.go_to_previous_page()
         assert hovers_page.page_is_successfully_open(hovers_page.USER_IMAGES), "Returning to the previous page failed"
 
+
 def test_windows_page(driver):
     windows_page = WindowsPage(driver)
     windows_page.open()
@@ -93,7 +95,7 @@ def test_windows_page(driver):
     windows_page.switch_to_new_window()
     new_window_page = NewWindowPage(driver)
     assert new_window_page.get_title() == "New Window", "Not correct TITLE of page"
-    assert new_window_page.get_new_window_text() == "New Window",  "Not correct text on new window page"
+    assert new_window_page.get_new_window_text() == "New Window", "Not correct text on new window page"
 
     windows_page.switch_to_first_window()
     assert windows_page.page_is_successfully_open(windows_page.HREF_NEW_WINDOW), "The main page is not opened correctly"
@@ -107,6 +109,20 @@ def test_windows_page(driver):
     assert windows_page.page_is_successfully_open(windows_page.HREF_NEW_WINDOW), "The main page is not opened correctly"
 
     windows_page.close_window_by_title("New Window")
-    assert  windows_page.get_window_count() ==  2, "Expected 2 windows after closing the first new window"
+    assert windows_page.get_window_count() == 2, "Expected 2 windows after closing the first new window"
     windows_page.close_window_by_title("New Window")
     assert windows_page.get_window_count() == 1, "Expected 1 window after closing the second new window."
+
+
+def test_dynamic_content_page(driver):
+    dynamic_content_page = DynamicContentPage(driver)
+    dynamic_content_page.open()
+    assert dynamic_content_page.page_is_successfully_open(dynamic_content_page.HREF)
+    while True:
+        dynamic_content_page.reload()
+        images = dynamic_content_page.get_user_images()
+        if len(set(images)) < len(images):
+            found_matching_images = True
+            break
+    # I don't understand how to complete the test
+    assert found_matching_images

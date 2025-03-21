@@ -57,3 +57,6 @@ class BasePage(ABC):
 
     def get_window_count(self):
         return self.web_driver.get_window_count(self.driver)
+
+    def reload(self):
+        self.driver.refresh()
