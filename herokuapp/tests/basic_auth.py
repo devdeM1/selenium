@@ -1,3 +1,7 @@
+import time
+
+import pyautogui
+
 from faker import Faker
 
 from herokuapp.pages.basic_auth_page import BasicAuthPage
@@ -154,4 +158,19 @@ def test_file_upload_page(driver):
         "The file was not uploaded successfully."
     uploaded_file_name = "bsuir.png"
     assert upload_page.is_file_name_displayed(uploaded_file_name), \
+        f"The file '{uploaded_file_name}' was not displayed on the page."
+
+
+def test_file_drag_and_drop_upload(driver):
+    upload_page = UploadPage(driver)
+    upload_page.open()
+    assert upload_page.page_is_successfully_open(upload_page.DRAG_DROP_AREA), "The page is not opened correctly."
+    upload_page.click_on_drag_drop_area()
+    file_path = r"D:\Download\bsuir.png"
+    time.sleep(1)
+    pyautogui.write(file_path)
+    pyautogui.press('enter')
+    assert upload_page.is_tick_symbol_displayed()
+    uploaded_file_name = "bsuir.png"
+    assert upload_page.is_file_name_displayed_on_drag_drop_area(uploaded_file_name), \
         f"The file '{uploaded_file_name}' was not displayed on the page."
