@@ -1,6 +1,7 @@
+import os
 import time
-
 import pyautogui
+from pywinauto import Application
 
 from faker import Faker
 
@@ -147,30 +148,34 @@ def test_infinite_scroll_page(driver):
     assert paragraph_count == 23, f"The number of paragraphs should be 23, but found {paragraph_count}."
 
 
-def test_file_upload_page(driver):
+def test_file_upload_page_with_send_keys(driver):
     upload_page = UploadPage(driver)
     upload_page.open()
     assert upload_page.page_is_successfully_open(upload_page.UPLOAD_BUTTON), "The page is not opened correctly."
-    file_path = r"D:\Download\bsuir.png"
+    file_name = "bsuir.png"
+    project_directory = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.abspath(os.path.join(project_directory, '..', '..', 'uploads', file_name))
+    assert os.path.isfile(file_path), f"File not found: {file_path}"
     upload_page.upload_file(file_path)
     upload_page.submit_upload()
-    assert upload_page.page_is_successfully_open(upload_page.SUCCESS_MESSAGE), \
-        "The file was not uploaded successfully."
+    assert upload_page.page_is_successfully_open(upload_page.SUCCESS_MESSAGE), "The file was not uploaded successfully."
     uploaded_file_name = "bsuir.png"
-    assert upload_page.is_file_name_displayed(uploaded_file_name), \
-        f"The file '{uploaded_file_name}' was not displayed on the page."
+    assert upload_page.is_file_name_displayed(
+        uploaded_file_name), f"The file '{uploaded_file_name}' was not displayed on the page."
 
 
-def test_file_drag_and_drop_upload(driver):
+def test_file_upload_with_dialog_window_write_path(driver):
     upload_page = UploadPage(driver)
     upload_page.open()
     assert upload_page.page_is_successfully_open(upload_page.DRAG_DROP_AREA), "The page is not opened correctly."
     upload_page.click_on_drag_drop_area()
-    file_path = r"D:\Download\bsuir.png"
+    file_name = "bsuir.png"
+    project_directory = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.abspath(os.path.join(project_directory, '..', '..', 'uploads', file_name))
+    assert os.path.isfile(file_path), f"File not found: {file_path}"
     time.sleep(1)
     pyautogui.write(file_path)
     pyautogui.press('enter')
-    assert upload_page.is_tick_symbol_displayed()
-    uploaded_file_name = "bsuir.png"
-    assert upload_page.is_file_name_displayed_on_drag_drop_area(uploaded_file_name), \
-        f"The file '{uploaded_file_name}' was not displayed on the page."
+    assert upload_page.is_tick_symbol_displayed(), "Tick symbol was not displayed after upload."
+    assert upload_page.is_file_name_displayed_on_drag_drop_area(
+        file_name), f"The file '{file_name}' was not displayed on the page."
