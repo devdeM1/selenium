@@ -26,7 +26,7 @@ def test_basic_auth(driver):
     assert auth_page.is_auth_successful(), "Authorization failed."
 
 
-def test_javascript_alert(driver):
+def test_alert(driver):
     js_alerts_page = JavaScriptAlertsPage(driver)
     js_alerts_page.open()
     assert js_alerts_page.page_is_successfully_open(js_alerts_page.BUTTON_JS_ALERT), "The page is not opened correctly"
@@ -45,6 +45,32 @@ def test_javascript_alert(driver):
     assert js_alerts_page.get_result_output() == "You clicked: Ok", "Something is wrong with the alert"
 
     js_alerts_page.click_button_js_prompt()
+    assert js_alerts_page.get_alert_text() == "I am a JS prompt", "Unexpected alert text!"
+    random_text = Faker().sentence()
+    js_alerts_page.input_text_to_prompt(random_text)
+    js_alerts_page.accept_alert()
+    assert js_alerts_page.get_result_output() == f"You entered: {random_text}", \
+        "Prompt input was not processed correctly"
+
+
+def test_alert_with_js(driver):
+    js_alerts_page = JavaScriptAlertsPage(driver)
+    js_alerts_page.open()
+    assert js_alerts_page.page_is_successfully_open(js_alerts_page.BUTTON_JS_ALERT), "The page is not opened correctly"
+    js_alerts_page.trigger_js_alert()
+    assert js_alerts_page.get_alert_text() == "I am a JS Alert", "Unexpected alert text!"
+    js_alerts_page.accept_alert()
+    assert js_alerts_page.verify_alert_closed()
+    assert js_alerts_page.get_result_output() == "You successfully clicked an alert", \
+        "Something is wrong with the alert"
+
+    js_alerts_page.trigger_js_confirm()
+    assert js_alerts_page.get_alert_text() == "I am a JS Confirm", "Unexpected alert text!"
+    js_alerts_page.accept_alert()
+    assert js_alerts_page.verify_alert_closed()
+    assert js_alerts_page.get_result_output() == "You clicked: Ok", "Something is wrong with the alert"
+
+    js_alerts_page.trigger_js_prompt()
     assert js_alerts_page.get_alert_text() == "I am a JS prompt", "Unexpected alert text!"
     random_text = Faker().sentence()
     js_alerts_page.input_text_to_prompt(random_text)
@@ -179,3 +205,28 @@ def test_file_upload_with_dialog_window_write_path(driver):
     assert upload_page.is_tick_symbol_displayed(), "Tick symbol was not displayed after upload."
     assert upload_page.is_file_name_displayed_on_drag_drop_area(
         file_name), f"The file '{file_name}' was not displayed on the page."
+
+
+def test_file_upload_with_drag_and_drop(driver):
+    upload_page = UploadPage(driver)
+    upload_page.open()
+    assert upload_page.page_is_successfully_open(upload_page.DRAG_DROP_AREA), "The page is not opened correctly."
+
+    file_name = "bsuir.png"
+    project_directory = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.abspath(os.path.join(project_directory, '..', '..', 'uploads', file_name))
+    assert os.path.isfile(file_path), f"File not found: {file_path}"
+
+    app = Application().start("explorer.exe")
+    time.sleep(1)
+
+    pyautogui.click(700, 200)
+    pyautogui.press('delete')
+    pyautogui.write(os.path.dirname(file_path))
+    pyautogui.press('enter')
+    pyautogui.click(250, 300)
+    time.sleep(0.5)
+    pyautogui.mouseDown()
+    pyautogui.moveTo(50, 500)
+    time.sleep(0.5)
+    pyautogui.mouseUp()

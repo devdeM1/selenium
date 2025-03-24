@@ -24,3 +24,12 @@ class JavaScriptAlertsPage(BasePage):
 
     def get_result_output(self):
         return self.web_driver.get_present_element(self.driver, JavaScriptAlertsPage.TITLE_AFTER_CLOSE_ALERT).text
+
+    def trigger_js_alert(self):
+        self.driver.execute_script("jsAlert();")
+
+    def trigger_js_confirm(self):
+        self.driver.execute_script("jsConfirm();")
+
+    def trigger_js_prompt(self):
+        self.driver.execute_script("jsPrompt();")
