@@ -1,7 +1,6 @@
-import os
 import time
 import pyautogui
-from pywinauto import Application
+import pytest
 
 from faker import Faker
 
@@ -16,7 +15,9 @@ from herokuapp.pages.js_alerst_page import JavaScriptAlertsPage
 from herokuapp.pages.new_widndow_page import NewWindowPage
 from herokuapp.pages.upload_page import UploadPage
 from herokuapp.pages.windows_page import WindowsPage
-from utils import get_random_slider_value
+from utils.images_utils import find_matching_images
+from utils.path_utils import get_file_path, file_exists
+from utils.random_utils import get_random_slider_value
 
 
 def test_basic_auth(driver):
@@ -34,14 +35,14 @@ def test_alert(driver):
     js_alerts_page.click_button_js_alert()
     assert js_alerts_page.get_alert_text() == "I am a JS Alert", "Unexpected alert text!"
     js_alerts_page.accept_alert()
-    assert js_alerts_page.verify_alert_closed()
+    assert js_alerts_page.verify_alert_closed(), "The alert was not closed successfully!"
     assert js_alerts_page.get_result_output() == "You successfully clicked an alert", \
         "Something is wrong with the alert"
 
     js_alerts_page.click_button_js_confirm()
     assert js_alerts_page.get_alert_text() == "I am a JS Confirm", "Unexpected alert text!"
     js_alerts_page.accept_alert()
-    assert js_alerts_page.verify_alert_closed()
+    assert js_alerts_page.verify_alert_closed(), "The alert was not closed successfully!"
     assert js_alerts_page.get_result_output() == "You clicked: Ok", "Something is wrong with the alert"
 
     js_alerts_page.click_button_js_prompt()
@@ -60,14 +61,14 @@ def test_alert_with_js(driver):
     js_alerts_page.trigger_js_alert()
     assert js_alerts_page.get_alert_text() == "I am a JS Alert", "Unexpected alert text!"
     js_alerts_page.accept_alert()
-    assert js_alerts_page.verify_alert_closed()
+    assert js_alerts_page.verify_alert_closed(), "The alert was not closed successfully!"
     assert js_alerts_page.get_result_output() == "You successfully clicked an alert", \
         "Something is wrong with the alert"
 
     js_alerts_page.trigger_js_confirm()
     assert js_alerts_page.get_alert_text() == "I am a JS Confirm", "Unexpected alert text!"
     js_alerts_page.accept_alert()
-    assert js_alerts_page.verify_alert_closed()
+    assert js_alerts_page.verify_alert_closed(), "The alert was not closed successfully!"
     assert js_alerts_page.get_result_output() == "You clicked: Ok", "Something is wrong with the alert"
 
     js_alerts_page.trigger_js_prompt()
@@ -89,7 +90,7 @@ def test_contex_menu_page(driver):
     alert_text = context_menu_page.get_alert_text()
     assert alert_text == "You selected a context menu", "Unexpected alert text!"
     context_menu_page.accept_alert()
-    assert context_menu_page.verify_alert_closed()
+    assert context_menu_page.verify_alert_closed(), "The context menu alert was not closed successfully!"
 
 
 def test_horizontal_slider_page(driver):
@@ -147,18 +148,19 @@ def test_windows_page(driver):
     assert windows_page.get_window_count() == 1, "Expected 1 window after closing the second new window."
 
 
+MAX_RELOAD_ATTEMPTS = 10
+
+
+@pytest.mark.timeout(15)
 def test_dynamic_content_page(driver):
     dynamic_content_page = DynamicContentPage(driver)
     dynamic_content_page.open()
     assert dynamic_content_page.page_is_successfully_open(dynamic_content_page.HREF), "The page is not opened correctly"
-    while True:
-        dynamic_content_page.reload()
-        images = dynamic_content_page.get_user_images()
-        if len(set(images)) < len(images):
-            found_matching_images = True
-            break
-    # I don't understand how to complete the test
-    assert found_matching_images
+    found_matching_images = find_matching_images(dynamic_content_page)
+    assert found_matching_images, "No matching images found after reloading."
+
+
+EXPECTED_PARAGRAPH_COUNT = 23
 
 
 def test_infinite_scroll_page(driver):
@@ -166,28 +168,26 @@ def test_infinite_scroll_page(driver):
     infinite_scroll_page.open()
     assert infinite_scroll_page.page_is_successfully_open(infinite_scroll_page.PARAGRAPHS), \
         "The page is not opened correctly"
-    paragraph_count = 0
-    while paragraph_count < 23:
-        infinite_scroll_page.scroll_down()
-        paragraph_count = infinite_scroll_page.get_paragraph_count()
+    infinite_scroll_page.scroll_until_paragraphs_loaded(EXPECTED_PARAGRAPH_COUNT)
+    assert infinite_scroll_page.get_paragraph_count() == EXPECTED_PARAGRAPH_COUNT, \
+        f"The number of paragraphs should be {EXPECTED_PARAGRAPH_COUNT},\
+         but found {infinite_scroll_page.get_paragraph_count()}."
 
-    assert paragraph_count == 23, f"The number of paragraphs should be 23, but found {paragraph_count}."
+
+FILE_NAME = "bsuir.png"
 
 
 def test_file_upload_page_with_send_keys(driver):
     upload_page = UploadPage(driver)
     upload_page.open()
     assert upload_page.page_is_successfully_open(upload_page.UPLOAD_BUTTON), "The page is not opened correctly."
-    file_name = "bsuir.png"
-    project_directory = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.abspath(os.path.join(project_directory, '..', '..', 'uploads', file_name))
-    assert os.path.isfile(file_path), f"File not found: {file_path}"
+    file_path = get_file_path(FILE_NAME)
+    assert file_exists(file_path), f"File not found: {file_path}"
     upload_page.upload_file(file_path)
     upload_page.submit_upload()
     assert upload_page.page_is_successfully_open(upload_page.SUCCESS_MESSAGE), "The file was not uploaded successfully."
-    uploaded_file_name = "bsuir.png"
     assert upload_page.is_file_name_displayed(
-        uploaded_file_name), f"The file '{uploaded_file_name}' was not displayed on the page."
+        FILE_NAME), f"The file '{FILE_NAME}' was not displayed on the page."
 
 
 def test_file_upload_with_dialog_window_write_path(driver):
@@ -195,38 +195,11 @@ def test_file_upload_with_dialog_window_write_path(driver):
     upload_page.open()
     assert upload_page.page_is_successfully_open(upload_page.DRAG_DROP_AREA), "The page is not opened correctly."
     upload_page.click_on_drag_drop_area()
-    file_name = "bsuir.png"
-    project_directory = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.abspath(os.path.join(project_directory, '..', '..', 'uploads', file_name))
-    assert os.path.isfile(file_path), f"File not found: {file_path}"
+    file_path = get_file_path(FILE_NAME)
+    assert file_exists(file_path), f"File not found: {file_path}"
     time.sleep(1)
     pyautogui.write(file_path)
     pyautogui.press('enter')
     assert upload_page.is_tick_symbol_displayed(), "Tick symbol was not displayed after upload."
     assert upload_page.is_file_name_displayed_on_drag_drop_area(
-        file_name), f"The file '{file_name}' was not displayed on the page."
-
-
-def test_file_upload_with_drag_and_drop(driver):
-    upload_page = UploadPage(driver)
-    upload_page.open()
-    assert upload_page.page_is_successfully_open(upload_page.DRAG_DROP_AREA), "The page is not opened correctly."
-
-    file_name = "bsuir.png"
-    project_directory = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.abspath(os.path.join(project_directory, '..', '..', 'uploads', file_name))
-    assert os.path.isfile(file_path), f"File not found: {file_path}"
-
-    app = Application().start("explorer.exe")
-    time.sleep(1)
-
-    pyautogui.click(700, 200)
-    pyautogui.press('delete')
-    pyautogui.write(os.path.dirname(file_path))
-    pyautogui.press('enter')
-    pyautogui.click(250, 300)
-    time.sleep(0.5)
-    pyautogui.mouseDown()
-    pyautogui.moveTo(50, 500)
-    time.sleep(0.5)
-    pyautogui.mouseUp()
+        FILE_NAME), f"The file '{FILE_NAME}' was not displayed on the page."

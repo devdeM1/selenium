@@ -5,7 +5,7 @@ from steam.pages.login_page import LoginPage
 from steam.pages.main_page import MainPage
 from steam.pages.search_page import SearchPage
 from steam.conftest import driver
-from utils import extract_prices
+from utils.price_utils import extract_prices
 
 
 class TestLogin:

@@ -1,5 +1,5 @@
 from abc import ABC
-from web_driver_utils import WebDriverUtils
+from utils.web_driver_utils import WebDriverUtils
 from selenium.common.exceptions import TimeoutException
 
 

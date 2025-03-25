@@ -13,3 +13,9 @@ class InfiniteScrollPage(BasePage):
     def get_paragraph_count(self):
         elements = self.web_driver.get_present_elements(self.driver, self.PARAGRAPHS)
         return len(elements)
+
+    def scroll_until_paragraphs_loaded(self, expected_count):
+        paragraph_count = 0
+        while paragraph_count < expected_count:
+            self.scroll_down()
+            paragraph_count = self.get_paragraph_count()
