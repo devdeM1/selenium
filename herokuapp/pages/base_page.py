@@ -63,3 +63,20 @@ class BasePage(ABC):
 
     def scroll_down(self):
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    def switch_to_frame(self, frame_locator):
+        frame_element = self.driver.find_element(*frame_locator)
+        self.driver.switch_to.frame(frame_element)
+
+    def get_text_from_frame(self, frame_locator, text_locator) -> str:
+        self.switch_to_frame(frame_locator)
+        text = self.driver.find_element(*text_locator).text
+        self.switch_to_default_content()
+        return text
+
+    def switch_to_default_content(self):
+        self.driver.switch_to.default_content()
+
+    def scroll_to_element(self, locator):
+        element = self.driver.find_element(*locator)
+        self.driver.execute_script("arguments[0].scrollIntoView();", element)

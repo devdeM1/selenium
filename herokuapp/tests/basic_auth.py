@@ -8,10 +8,12 @@ from herokuapp.pages.basic_auth_page import BasicAuthPage
 from herokuapp.conftest import driver
 from herokuapp.pages.contex_menu_page import ContexMenuPage
 from herokuapp.pages.dynamic_content_page import DynamicContentPage
+from herokuapp.pages.frames_page import FramesPage
 from herokuapp.pages.horizontal_slider_page import HorizontalSliderPage
 from herokuapp.pages.hovers_page import HoversPage
 from herokuapp.pages.infinite_scroll_page import InfiniteScrollPage
 from herokuapp.pages.js_alerst_page import JavaScriptAlertsPage
+from herokuapp.pages.nested_frame_page import NestedFramePage
 from herokuapp.pages.new_widndow_page import NewWindowPage
 from herokuapp.pages.upload_page import UploadPage
 from herokuapp.pages.windows_page import WindowsPage
@@ -203,3 +205,24 @@ def test_file_upload_with_dialog_window_write_path(driver):
     assert upload_page.is_tick_symbol_displayed(), "Tick symbol was not displayed after upload."
     assert upload_page.is_file_name_displayed_on_drag_drop_area(
         FILE_NAME), f"The file '{FILE_NAME}' was not displayed on the page."
+
+
+def test_frames_page(driver):
+    frames_page = FramesPage(driver)
+    frames_page.open()
+    assert frames_page.page_is_successfully_open(frames_page.BIG_FRAME), "The page is not opened correctly."
+    assert frames_page.get_text_from_frame(frames_page.BIG_FRAME, frames_page.TEXT_FRAME) == "This is a sample page", \
+        "Text in the big frame does not match expected value."
+    assert frames_page.get_text_from_frame(frames_page.SMALL_FRAME,
+
+                                           frames_page.TEXT_FRAME) == "This is a sample page", \
+        "Text in the small frame does not match expected value."
+    frames_page.click_nested_frames_link()
+    nested_frame_page = NestedFramePage(driver)
+    assert nested_frame_page.page_is_successfully_open(nested_frame_page.PARENT_FRAME), \
+        "The page is not opened correctly."
+    assert nested_frame_page.get_text_from_frame(nested_frame_page.PARENT_FRAME,
+                                                 nested_frame_page.TEXT_IN_PARENT_FRAME) == "Parent frame", \
+        "Text in the parent frame does not match expected value."
+    assert nested_frame_page.get_text_from_child_frame() == "Child Iframe", \
+        "Text in the child frame does not match expected value."
