@@ -10,10 +10,10 @@ class HoversPage(BasePage):
     USER_PROFILE_LINKS = (By.XPATH, "//div[@class='example']/div/div/a")
 
     TITLE_PROFILE = (By.XPATH, "//h1[text()='Not Found']")
-    url = "https://the-internet.herokuapp.com/hovers"
+    URL = "https://the-internet.herokuapp.com/hovers"
 
     def open(self):
-        self.driver.get(self.url)
+        self.driver.get(self.URL)
 
     def hover_on_user(self, index):
         user_images = self.web_driver.get_present_elements(self.driver, self.USER_IMAGES)

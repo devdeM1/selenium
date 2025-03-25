@@ -8,10 +8,10 @@ class JavaScriptAlertsPage(BasePage):
     BUTTON_JS_ALERT = (By.XPATH, "//button[@onclick='jsAlert()']")
     BUTTON_JS_CONFIRM = (By.XPATH, "//button[@onclick='jsConfirm()']")
     BUTTON_JS_PROMPT = (By.XPATH, "//button[@onclick='jsPrompt()']")
-    url = "https://the-internet.herokuapp.com/javascript_alerts"
+    URL = "https://the-internet.herokuapp.com/javascript_alerts"
 
     def open(self):
-        self.driver.get(self.url)
+        self.driver.get(self.URL)
 
     def click_button_js_alert(self):
         self.web_driver.get_present_element(self.driver, JavaScriptAlertsPage.BUTTON_JS_ALERT).click()

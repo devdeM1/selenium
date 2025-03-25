@@ -8,10 +8,10 @@ from herokuapp.pages.base_page import BasePage
 class HorizontalSliderPage(BasePage):
     HORIZONTAL_SLIDER = (By.XPATH, "//div[@class='sliderContainer']/input")
     SLIDER_VALUE_DISPLAY = (By.XPATH, "//div[@class='sliderContainer']/span")
-    url = "https://the-internet.herokuapp.com/horizontal_slider"
+    URL = "https://the-internet.herokuapp.com/horizontal_slider"
 
     def open(self):
-        self.driver.get(self.url)
+        self.driver.get(self.URL)
 
     def get_slider_properties(self):
         slider = self.web_driver.get_present_element(self.driver, self.HORIZONTAL_SLIDER)

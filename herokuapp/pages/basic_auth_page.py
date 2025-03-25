@@ -5,10 +5,10 @@ from herokuapp.pages.base_page import BasePage
 
 class BasicAuthPage(BasePage):
     TITLE = (By.XPATH, "//p[contains(text(), 'Congratulations! You must have the proper credentials')]")
-    url = "http://the-internet.herokuapp.com/basic_auth"
+    URL = "http://the-internet.herokuapp.com/basic_auth"
 
     def open(self):
-        self.driver.get(self.url)
+        self.driver.get(self.URL)
 
     def authorize(self, username, password):
         url = "http://{}:{}@the-internet.herokuapp.com/basic_auth".format(username, password)
