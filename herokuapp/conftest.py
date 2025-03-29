@@ -16,8 +16,6 @@ def driver():
 def pytest_runtest_makereport(item, call):
     outcome = yield
     report = outcome.get_result()
-
-    # Check if test failed and has driver fixture
     if report.when == "call" and report.failed:
         driver = item.funcargs.get('driver')
         if driver is not None:
