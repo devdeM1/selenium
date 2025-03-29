@@ -14,10 +14,6 @@ def driver():
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
-    """
-    Automatically capture screenshots on test failure
-    and attach them to Allure report.
-    """
     outcome = yield
     report = outcome.get_result()
 
